@@ -61,7 +61,6 @@ resource "aws_route_table_association" "tfwithpython-rta" {
 }
 
 
-# resource "aws_default_security_group" "default-sg" {
 resource "aws_security_group" "tfwithpython-sec-group" {
   name        = "tfwithpython-sec-group"
   description = "Allow Internet Trafifc"
@@ -117,7 +116,6 @@ resource "aws_security_group" "tfwithpython-sec-group" {
 data "aws_ami" "tfwithpython-ami" {
   most_recent = true
   owners = ["amazon"]
-  # root_device_name    = "/dev/xvda"
 
   filter {
     name = "name"
@@ -145,7 +143,6 @@ resource "aws_instance" "tfwithpython-ec2" {
   associate_public_ip_address = true
 
   key_name = aws_key_pair.tfwithpython-sshpub-key.key_name
-  # key_name = "tfwithpython-pub-key"
   tags = {
     "Name" = "tfwithpython-ec2"
   }
