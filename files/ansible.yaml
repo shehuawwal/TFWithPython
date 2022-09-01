@@ -1,0 +1,12 @@
+---
+  - name: "Ansible Script"
+    hosts: localhost
+    connection: local
+    become: true
+    tasks:
+
+    - name: "Run A Docker Container"
+      shell: "docker pull nginx && docker run -dit --name nginx_tf -p 80:80 nginx:latest"
+      register: "output"
+    - debug: var=output.stdout_lines
+

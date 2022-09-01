@@ -15,6 +15,8 @@ variable "avail_zone" {
 }
 
 variable ssh_pub_key {}
+variable ssh_priv_key {}
+
 
 resource "aws_vpc" "tfwithpython-vpc" {
   cidr_block = var.cidr_blocks[0]
@@ -146,9 +148,27 @@ resource "aws_instance" "tfwithpython-ec2" {
     "Name" = "tfwithpython-ec2"
   }
 
-  user_data = file("config-script.sh")
-}
+  connection {
+    type = "ssh"
+    host = self.public_ip
+    user = "ec2-user"
+    private_key = file(var.ssh_priv_key)
+  }
 
+  provisioner "file" {
+    source = "files"
+    destination = "/home/ec2-user/files"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /home/ec2-user/files/*",
+      "bash /home/ec2-user/files/config-script.sh",
+      "ansible-playbook /home/ec2-user/files/ansible.yaml"
+    ]
+  }
+
+}
 
 output "ec2-public-ip" {
   value = aws_instance.tfwithpython-ec2.public_ip
